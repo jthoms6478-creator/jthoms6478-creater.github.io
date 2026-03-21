@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JOSH_OS v2.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#05010f;font-family:'Share Tech Mono',monospace;color:#b48aff;min-height:100vh;overflow-x:hidden;position:relative}
+
+    .grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;
+      background-image:linear-gradient(rgba(120,60,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(120,60,255,0.04) 1px,transparent 1px);
+      background-size:40px 40px;z-index:0}
+    .scanline{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;
+      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);z-index:1}
+    .vignette{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;
+      background:radial-gradient(ellipse at center,transparent 40%,rgba(5,1,15,0.85) 100%);z-index:2}
+
+    .container{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:20px}
+
+    .header{text-align:center;border-bottom:1px solid #7c3aed44;padding-bottom:16px}
+    .header .sys-id{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:4px;color:#7c3aed88;margin-bottom:4px}
+    .header .user{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:#e040fb;letter-spacing:6px;text-shadow:0 0 20px #e040fbaa,0 0 40px #7c3aed66}
+    .blink{animation:blink 1.2s step-end infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+    .panel{background:rgba(10,2,30,0.88);border:1px solid #7c3aed33;padding:20px}
+
+    .clock-label{font-size:10px;letter-spacing:3px;color:#7c3aed88;margin-bottom:12px;text-align:center}
+    .nixie-row{display:flex;align-items:center;justify-content:center;gap:6px}
+    .tube{position:relative;width:64px;height:96px;background:linear-gradient(180deg,#100520 0%,#080212 100%);border:1px solid #4a1080;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .tube::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(180,80,255,0.06) 0%,transparent 60%);border-radius:6px}
+    .tube::after{content:'';position:absolute;top:2px;left:4px;right:4px;height:30%;background:linear-gradient(180deg,rgba(255,255,255,0.05),transparent);border-radius:4px 4px 0 0}
+    .tube-glow{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,200,255,0.18) 0%,transparent 70%);border-radius:6px;z-index:1}
+    .tube-digit{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:700;color:#00e5ff;text-shadow:0 0 8px #00e5ffcc,0 0 20px #00aaff99,0 0 40px #0077ff55;position:relative;z-index:2;line-height:1}
+    .colon{font-family:'Orbitron',sans-serif;font-size:40px;color:#7c3aed;text-shadow:0 0 10px #9b59f5cc;margin:0 2px;align-self:center;animation:colonblink 1s step-end infinite}
+    @keyframes colonblink{0%,100%{opacity:1}50%{opacity:0.12}}
+    .date-line{font-size:11px;letter-spacing:3px;color:#7c3aed99;margin-top:12px;text-align:center}
+
+    .panel-title{font-size:9px;letter-spacing:3px;color:#7c3aed88;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+    .weather-main{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+    .weather-temp{font-family:'Orbitron',sans-serif;font-size:52px;font-weight:900;color:#e040fb;text-shadow:0 0 15px #e040fb88;line-height:1}
+    .weather-temp sup{font-size:22px;vertical-align:super}
+    .weather-info{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#b48aff99}
+    .weather-city{font-family:'Orbitron',sans-serif;font-size:14px;color:#e040fb;letter-spacing:2px}
+    .wx-icon{font-size:26px;margin:4px 0;color:#00e5ff}
+    .weather-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;border-top:1px solid #7c3aed22;padding-top:12px}
+    .stat-box{display:flex;flex-direction:column;gap:2px}
+    .stat-label{font-size:9px;letter-spacing:2px;color:#7c3aed55}
+    .stat-val{font-size:14px;color:#00e5ffbb}
+    .weather-input-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .city-input{background:rgba(20,5,50,0.8);border:1px solid #7c3aed33;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 12px;outline:none;flex:1;min-width:140px}
+    .city-input::placeholder{color:#7c3aed44}
+    .city-input:focus{border-color:#9b59f5;box-shadow:0 0 8px #7c3aed33}
+    .go-btn{background:transparent;border:1px solid #7c3aed88;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 16px;cursor:pointer;letter-spacing:2px;transition:all 0.2s}
+    .go-btn:hover{background:#7c3aed22;border-color:#b48aff;box-shadow:0 0 10px #7c3aed44}
+    .weather-loading{color:#7c3aed77;font-size:12px;margin-top:8px;animation:pulse 1.5s ease-in-out infinite}
+    .weather-error{color:#ff4488;font-size:12px;margin-top:8px}
+    @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+    .links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-top:10px}
+    .link-item{border:1px solid #7c3aed22;padding:10px 12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px;text-decoration:none;color:#b48aff88;font-size:12px}
+    .link-item:hover{border-color:#9b59f566;color:#e040fb;background:#7c3aed11;box-shadow:0 0 8px #7c3aed22}
+    .link-arrow{color:#7c3aed55;font-size:10px}
+
+    .status-bar{border-top:1px solid #7c3aed22;padding-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:10px;color:#7c3aed55;letter-spacing:2px}
+    .status-dot{width:6px;height:6px;border-radius:50%;background:#00ff41;display:inline-block;margin-right:6px;box-shadow:0 0 6px #00ff41;animation:pulse 2s ease-in-out infinite}
+  </style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanline"></div>
+<div class="vignette"></div>
+
+<div class="container">
+
+  <div class="header">
+    <div class="sys-id">SYSTEM TERMINAL // NODE_01</div>
+    <div class="user">JOSH<span class="blink">_</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="clock-label">// CHRONOMETER //</div>
+    <div class="nixie-row" id="nixie-row"></div>
+    <div class="date-line" id="date-line">...</div>
+  </div>
+
+  <div class="panel" id="weather-panel">
+    <div class="panel-title">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="7" y="6" width="2" height="4" rx="0.5" fill="#7c3aed"/>
+        <rect x="4" y="7" width="8" height="2" rx="0.5" fill="#9b59f5"/>
+        <rect x="2" y="6" width="2" height="4" rx="0.5" fill="#00e5ff"/>
+        <rect x="12" y="6" width="2" height="4" rx="0.5" fill="#00e5ff"/>
+        <circle cx="8" cy="8" r="1.5" fill="#e040fb"/>
+        <line x1="8" y1="1" x2="12" y2="4" stroke="#7c3aed" stroke-width="0.8"/>
+        <circle cx="13" cy="3" r="1" fill="#00ff41" opacity="0.8"/>
+      </svg>
+      <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
+        <ellipse cx="9" cy="9" rx="7" ry="4" fill="#7c3aed55" stroke="#7c3aed" stroke-width="0.8"/>
+        <ellipse cx="6" cy="7" rx="4" ry="3" fill="#100520" stroke="#9b59f5" stroke-width="0.8"/>
+        <ellipse cx="11" cy="6" rx="4.5" ry="3.5" fill="#100520" stroke="#9b59f5" stroke-width="0.8"/>
+        <ellipse cx="8.5" cy="5" rx="3.5" ry="3" fill="#100520" stroke="#b48aff" stroke-width="0.8"/>
+      </svg>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="3" fill="#e040fb" opacity="0.8"/>
+        <line x1="8" y1="1" x2="8" y2="3" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="8" y1="13" x2="8" y2="15" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="1" y1="8" x2="3" y2="8" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="13" y1="8" x2="15" y2="8" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="3" y1="3" x2="4.5" y2="4.5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+        <line x1="11.5" y1="11.5" x2="13" y2="13" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+        <line x1="13" y1="3" x2="11.5" y2="4.5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+        <line x1="4.5" y1="11.5" x2="3" y2="13" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+      </svg>
+      // ATMOSPHERIC FEED //
+    </div>
+    <div id="weather-content">
+      <div class="weather-input-row">
+        <input class="city-input" id="city-input" placeholder="ENTER CITY..." value="Denver"/>
+        <button class="go-btn" id="go-btn">SCAN &gt;</button>
+      </div>
+      <div class="weather-loading" id="weather-status">AWAITING QUERY...</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">// QUICK ACCESS //</div>
+    <div class="links-grid">
+      <a class="link-item" href="https://github.com" target="_blank"><span class="link-arrow">▶</span>GitHub</a>
+      <a class="link-item" href="https://claude.ai" target="_blank"><span class="link-arrow">▶</span>Claude AI</a>
+      <a class="link-item" href="https://vercel.com" target="_blank"><span class="link-arrow">▶</span>Vercel</a>
+      <a class="link-item" href="https://www.reddit.com" target="_blank"><span class="link-arrow">▶</span>Reddit</a>
+      <a class="link-item" href="https://news.ycombinator.com" target="_blank"><span class="link-arrow">▶</span>Hacker News</a>
+      <a class="link-item" href="https://youtube.com" target="_blank"><span class="link-arrow">▶</span>YouTube</a>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <span><span class="status-dot"></span>SYSTEM ONLINE</span>
+    <span id="uptime-display">UPTIME: 00:00:00</span>
+    <span>JOSH_OS v2.0 // NEON GRID</span>
+  </div>
+
+</div>
+
+<script>
+  function pad(n){return String(n).padStart(2,'0')}
+  function makeTube(d){return `<div class="tube"><div class="tube-glow"></div><div class="tube-digit">${d}</div></div>`}
+  function makeColon(){return `<div class="colon">:</div>`}
+
+  function updateClock(){
+    const now=new Date();
+    const h=pad(now.getHours()),m=pad(now.getMinutes()),s=pad(now.getSeconds());
+    const row=document.getElementById('nixie-row');
+    if(row) row.innerHTML=makeTube(h[0])+makeTube(h[1])+makeColon()+makeTube(m[0])+makeTube(m[1])+makeColon()+makeTube(s[0])+makeTube(s[1]);
+    const days=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
+    const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const dl=document.getElementById('date-line');
+    if(dl) dl.textContent=`${days[now.getDay()]} // ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+  setInterval(updateClock,1000);
+  updateClock();
+
+  const t0=Date.now();
+  function updateUptime(){
+    const el=document.getElementById('uptime-display');
+    if(!el)return;
+    const s=Math.floor((Date.now()-t0)/1000);
+    el.textContent=`UPTIME: ${pad(Math.floor(s/3600))}:${pad(Math.floor((s%3600)/60))}:${pad(s%60)}`;
+  }
+  setInterval(updateUptime,1000);
+
+  const WMO={0:'CLEAR SKY',1:'MAINLY CLEAR',2:'PARTLY CLOUDY',3:'OVERCAST',45:'FOG',48:'RIME FOG',
+    51:'LIGHT DRIZZLE',53:'DRIZZLE',55:'HEAVY DRIZZLE',61:'LIGHT RAIN',63:'RAIN',65:'HEAVY RAIN',
+    71:'LIGHT SNOW',73:'SNOW',75:'HEAVY SNOW',77:'SNOW GRAINS',80:'RAIN SHOWERS',81:'HEAVY SHOWERS',
+    82:'VIOLENT SHOWERS',85:'SNOW SHOWERS',86:'HEAVY SNOW SHOWERS',95:'THUNDERSTORM',96:'T-STORM+HAIL',99:'SEVERE T-STORM'};
+  const WMO_ICON={0:'☀',1:'🌤',2:'⛅',3:'☁',45:'🌫',48:'🌫',51:'🌦',53:'🌧',55:'🌧',
+    61:'🌦',63:'🌧',65:'🌧',71:'🌨',73:'❄',75:'❄',77:'❄',80:'🌦',81:'🌧',82:'⛈',
+    85:'🌨',86:'❄',95:'⛈',96:'⛈',99:'⛈'};
+
+  function windDir(d){return ['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8]}
+
+  function getInputHTML(city=''){
+    return `<div class="weather-input-row">
+      <input class="city-input" id="city-input" placeholder="ENTER CITY..." value="${city}"/>
+      <button class="go-btn" id="go-btn">SCAN &gt;</button>
+    </div>`;
+  }
+
+  async function getWeather(city){
+    const statusEl=document.getElementById('weather-status');
+    const contentEl=document.getElementById('weather-content');
+    if(statusEl) statusEl.textContent='LOCATING TARGET...';
+    try{
+      const gR=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
+      const gD=await gR.json();
+      if(!gD.results||!gD.results.length) throw new Error('CITY NOT FOUND IN DATABASE');
+      const {latitude:lat,longitude:lon,name,country_code}=gD.results[0];
+      if(statusEl) statusEl.textContent='FETCHING ATMOSPHERIC DATA...';
+      const wR=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m,precipitation&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`);
+      const wx=await wR.json();
+      const c=wx.current;
+      const code=c.weather_code;
+      const temp=Math.round(c.temperature_2m);
+      const feels=Math.round(c.apparent_temperature);
+      const wind=Math.round(c.wind_speed_10m);
+      const wdir=windDir(c.wind_direction_10m);
+      const hum=Math.round(c.relative_humidity_2m);
+      const precip=c.precipitation.toFixed(1);
+      contentEl.innerHTML=`
+        ${getInputHTML(city)}
+        <div class="weather-main" style="margin-top:14px">
+          <div>
+            <div class="weather-temp">${temp}<sup>°F</sup></div>
+            <div style="font-size:11px;color:#7c3aed99;margin-top:4px;letter-spacing:1px">FEELS ${feels}°F</div>
+          </div>
+          <div class="weather-info">
+            <div class="weather-city">${name.toUpperCase()}, ${country_code.toUpperCase()}</div>
+            <div class="wx-icon">${WMO_ICON[code]||'?'}</div>
+            <div style="color:#b48affcc">${WMO[code]||'UNKNOWN'}</div>
+            <div style="color:#7c3aed66;font-size:11px">LAT ${lat.toFixed(2)} // LON ${lon.toFixed(2)}</div>
+          </div>
+        </div>
+        <div class="weather-stats">
+          <div class="stat-box"><div class="stat-label">HUMIDITY</div><div class="stat-val">${hum}%</div></div>
+          <div class="stat-box"><div class="stat-label">WIND</div><div class="stat-val">${wind} MPH ${wdir}</div></div>
+          <div class="stat-box"><div class="stat-label">PRECIP</div><div class="stat-val">${precip} MM</div></div>
+        </div>`;
+      document.getElementById('go-btn').addEventListener('click',handleWeather);
+      document.getElementById('city-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleWeather()});
+    }catch(e){
+      contentEl.innerHTML=`${getInputHTML(city)}<div class="weather-error">ERROR: ${e.message}</div>`;
+      document.getElementById('go-btn').addEventListener('click',handleWeather);
+      document.getElementById('city-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleWeather()});
+    }
+  }
+
+  function handleWeather(){
+    const city=document.getElementById('city-input')?.value?.trim();
+    if(city) getWeather(city);
+  }
+
+  document.getElementById('go-btn').addEventListener('click',handleWeather);
+  document.getElementById('city-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleWeather()});
+  getWeather('Denver');
+</script>
+</body>
+</html>
