@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JOSH_OS v2.0</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9,112 +9,140 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{background:#05010f;font-family:'Share Tech Mono',monospace;color:#b48aff;min-height:100vh;overflow-x:hidden;position:relative}
+    .bg-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .scanline{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);z-index:1}
+    .vignette{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background:radial-gradient(ellipse at center,transparent 35%,rgba(5,1,15,0.88) 100%);z-index:2}
 
-    .grid-bg{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;
-      background-image:linear-gradient(rgba(120,60,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(120,60,255,0.04) 1px,transparent 1px);
-      background-size:40px 40px;z-index:0}
-    .scanline{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);z-index:1}
-    .vignette{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;
-      background:radial-gradient(ellipse at center,transparent 40%,rgba(5,1,15,0.85) 100%);z-index:2}
+    .love-col{position:fixed;left:12px;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:10px;user-select:none}
+    .love-line{width:1px;height:10px;background:linear-gradient(to bottom,transparent,#7c3aed55,transparent)}
+    .lt{writing-mode:vertical-rl;text-orientation:mixed;font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:4px;line-height:1}
+    .lt-jp{font-size:15px;color:#e040fb;text-shadow:0 0 14px #e040fbcc,0 0 30px #7c3aed77;opacity:0.9}
+    .lt-zh{font-size:15px;color:#b48aff;text-shadow:0 0 12px #b48affcc,0 0 26px #7c3aed66;opacity:0.82}
+    .lt-es{font-size:12px;color:#00e5ff;text-shadow:0 0 10px #00e5ffcc,0 0 22px #0077ff55;letter-spacing:3px;opacity:0.75}
+    .lt-fr{font-size:11px;color:#e040fb;text-shadow:0 0 10px #e040fbaa,0 0 20px #7c3aed44;letter-spacing:3px;opacity:0.65}
+    .lt-pt{font-size:11px;color:#9b59f5;text-shadow:0 0 10px #9b59f5aa,0 0 20px #7c3aed44;letter-spacing:3px;opacity:0.55}
 
-    .container{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:24px 16px;display:flex;flex-direction:column;gap:20px}
+    .container{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:24px 16px 24px 52px;display:flex;flex-direction:column;gap:20px}
 
-    .header{text-align:center;border-bottom:1px solid #7c3aed44;padding-bottom:16px}
-    .header .sys-id{font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:4px;color:#7c3aed88;margin-bottom:4px}
-    .header .user{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;color:#e040fb;letter-spacing:6px;text-shadow:0 0 20px #e040fbaa,0 0 40px #7c3aed66}
+    .header{text-align:center;border-bottom:1px solid #7c3aed55;padding-bottom:16px}
+    .sys-id{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:#b48affcc;margin-bottom:6px}
+    .user{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:#e040fb;letter-spacing:8px;text-shadow:0 0 24px #e040fbcc,0 0 60px #7c3aed88;line-height:1.1}
     .blink{animation:blink 1.2s step-end infinite}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 
-    .panel{background:rgba(10,2,30,0.88);border:1px solid #7c3aed33;padding:20px}
+    .panel{background:rgba(10,2,30,0.88);border:1px solid #7c3aed44;padding:20px}
+    .panel-title{font-size:11px;letter-spacing:3px;color:#d0aaff;margin-bottom:12px;text-transform:uppercase;display:flex;align-items:center;gap:8px;font-weight:bold}
 
-    .clock-label{font-size:10px;letter-spacing:3px;color:#7c3aed88;margin-bottom:12px;text-align:center}
+    .clock-label{font-size:11px;letter-spacing:3px;color:#d0aaff;margin-bottom:12px;text-align:center;font-weight:bold}
     .nixie-row{display:flex;align-items:center;justify-content:center;gap:6px}
-    .tube{position:relative;width:64px;height:96px;background:linear-gradient(180deg,#100520 0%,#080212 100%);border:1px solid #4a1080;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-    .tube::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(180,80,255,0.06) 0%,transparent 60%);border-radius:6px}
+    .tube{position:relative;width:64px;height:96px;background:linear-gradient(180deg,#100520,#080212);border:1px solid #4a1080;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .tube::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(180,80,255,0.07),transparent 60%);border-radius:6px}
     .tube::after{content:'';position:absolute;top:2px;left:4px;right:4px;height:30%;background:linear-gradient(180deg,rgba(255,255,255,0.05),transparent);border-radius:4px 4px 0 0}
-    .tube-glow{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,200,255,0.18) 0%,transparent 70%);border-radius:6px;z-index:1}
-    .tube-digit{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:700;color:#00e5ff;text-shadow:0 0 8px #00e5ffcc,0 0 20px #00aaff99,0 0 40px #0077ff55;position:relative;z-index:2;line-height:1}
-    .colon{font-family:'Orbitron',sans-serif;font-size:40px;color:#7c3aed;text-shadow:0 0 10px #9b59f5cc;margin:0 2px;align-self:center;animation:colonblink 1s step-end infinite}
-    @keyframes colonblink{0%,100%{opacity:1}50%{opacity:0.12}}
-    .date-line{font-size:11px;letter-spacing:3px;color:#7c3aed99;margin-top:12px;text-align:center}
+    .tube-glow{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,200,255,0.22),transparent 70%);border-radius:6px;z-index:1}
+    .tube-digit{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:700;color:#00e5ff;text-shadow:0 0 8px #00e5ffcc,0 0 22px #00aaff99,0 0 44px #0077ff55;position:relative;z-index:2;line-height:1}
+    .colon{font-family:'Orbitron',sans-serif;font-size:40px;color:#9b59f5;text-shadow:0 0 12px #9b59f5cc;margin:0 2px;align-self:center;animation:colonblink 1s step-end infinite}
+    @keyframes colonblink{0%,100%{opacity:1}50%{opacity:0.1}}
+    .date-line{font-size:12px;letter-spacing:3px;color:#9b59f5cc;margin-top:10px;text-align:center}
+    .time-msg{font-size:15px;letter-spacing:2px;text-align:center;margin-top:8px;min-height:22px;font-family:'Orbitron',sans-serif;font-weight:700}
 
-    .panel-title{font-size:9px;letter-spacing:3px;color:#7c3aed88;margin-bottom:10px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-    .weather-main{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
     .weather-temp{font-family:'Orbitron',sans-serif;font-size:52px;font-weight:900;color:#e040fb;text-shadow:0 0 15px #e040fb88;line-height:1}
     .weather-temp sup{font-size:22px;vertical-align:super}
+    .weather-city{font-family:'Orbitron',sans-serif;font-size:15px;color:#e040fb;letter-spacing:2px}
     .weather-info{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#b48aff99}
-    .weather-city{font-family:'Orbitron',sans-serif;font-size:14px;color:#e040fb;letter-spacing:2px}
-    .wx-icon{font-size:26px;margin:4px 0;color:#00e5ff}
+    .wx-icon{font-size:28px;margin:4px 0}
+    .weather-main{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
     .weather-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;border-top:1px solid #7c3aed22;padding-top:12px}
-    .stat-box{display:flex;flex-direction:column;gap:2px}
-    .stat-label{font-size:9px;letter-spacing:2px;color:#7c3aed55}
-    .stat-val{font-size:14px;color:#00e5ffbb}
+    .stat-label{font-size:10px;letter-spacing:2px;color:#9b59f599}
+    .stat-val{font-size:14px;color:#00e5ffcc}
+    .wx-personal{font-size:13px;color:#e040fbbb;margin-top:10px;letter-spacing:1px;border-left:2px solid #e040fb55;padding-left:10px}
     .weather-input-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-    .city-input{background:rgba(20,5,50,0.8);border:1px solid #7c3aed33;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 12px;outline:none;flex:1;min-width:140px}
+    .city-input{background:rgba(20,5,50,0.8);border:1px solid #7c3aed44;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 12px;outline:none;flex:1;min-width:140px}
     .city-input::placeholder{color:#7c3aed44}
     .city-input:focus{border-color:#9b59f5;box-shadow:0 0 8px #7c3aed33}
     .go-btn{background:transparent;border:1px solid #7c3aed88;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 16px;cursor:pointer;letter-spacing:2px;transition:all 0.2s}
-    .go-btn:hover{background:#7c3aed22;border-color:#b48aff;box-shadow:0 0 10px #7c3aed44}
+    .go-btn:hover{background:#7c3aed22;border-color:#e040fb;box-shadow:0 0 12px #7c3aed55}
     .weather-loading{color:#7c3aed77;font-size:12px;margin-top:8px;animation:pulse 1.5s ease-in-out infinite}
     .weather-error{color:#ff4488;font-size:12px;margin-top:8px}
     @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
 
-    .links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-top:10px}
-    .link-item{border:1px solid #7c3aed22;padding:10px 12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:8px;text-decoration:none;color:#b48aff88;font-size:12px}
-    .link-item:hover{border-color:#9b59f566;color:#e040fb;background:#7c3aed11;box-shadow:0 0 8px #7c3aed22}
+    .links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+    .link-item{border:1px solid #7c3aed22;padding:10px 12px;transition:all 0.15s;display:flex;align-items:center;gap:8px;text-decoration:none;color:#b48aff99;font-size:12px}
+    .link-item:hover{border-color:#9b59f577;color:#e040fb;background:#7c3aed11;box-shadow:0 0 10px #7c3aed33}
     .link-arrow{color:#7c3aed55;font-size:10px}
 
-    .status-bar{border-top:1px solid #7c3aed22;padding-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:10px;color:#7c3aed55;letter-spacing:2px}
+    .status-bar{border-top:1px solid #7c3aed22;padding-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;color:#7c3aed77;letter-spacing:2px}
     .status-dot{width:6px;height:6px;border-radius:50%;background:#00ff41;display:inline-block;margin-right:6px;box-shadow:0 0 6px #00ff41;animation:pulse 2s ease-in-out infinite}
+
+    .smiley-wrap{display:flex;justify-content:center;padding:10px 0 4px}
+    .smiley-wrap a{display:inline-block;background:none !important;border:none !important;outline:none !important;box-shadow:none !important;padding:0 !important;margin:0 !important;text-decoration:none !important;-webkit-tap-highlight-color:transparent;cursor:pointer}
+    .smiley-wrap a svg{display:block;transition:filter 0.3s,transform 0.3s}
+    .smiley-wrap a:hover svg{filter:drop-shadow(0 0 16px #e040fb) drop-shadow(0 0 30px #7c3aed);transform:scale(1.1)}
+    .smiley-wrap a:focus,.smiley-wrap a:active{outline:none !important;box-shadow:none !important;border:none !important}
   </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
+<div class="bg-wrap">
+  <canvas id="grid-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+</div>
 <div class="scanline"></div>
 <div class="vignette"></div>
+
+<div class="love-col">
+  <span class="lt lt-jp">愛してます</span>
+  <div class="love-line"></div>
+  <span class="lt lt-zh">我爱你</span>
+  <div class="love-line"></div>
+  <span class="lt lt-es">Te amo</span>
+  <div class="love-line"></div>
+  <span class="lt lt-fr">Je t'aime</span>
+  <div class="love-line"></div>
+  <span class="lt lt-pt">Eu te amo</span>
+</div>
 
 <div class="container">
 
   <div class="header">
-    <div class="sys-id">SYSTEM TERMINAL // NODE_01</div>
-    <div class="user">JOSH<span class="blink">_</span></div>
+    <div class="sys-id">HOME TERMINAL // NODE_01</div>
+    <div class="user">HI JOSH<span class="blink">_</span></div>
   </div>
 
   <div class="panel">
-    <div class="clock-label">// CHRONOMETER //</div>
+    <div class="clock-label">// THE TIME IS NOW //</div>
     <div class="nixie-row" id="nixie-row"></div>
     <div class="date-line" id="date-line">...</div>
+    <div class="time-msg" id="time-msg"></div>
   </div>
 
-  <div class="panel" id="weather-panel">
+  <div class="panel">
     <div class="panel-title">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="7" y="6" width="2" height="4" rx="0.5" fill="#7c3aed"/>
-        <rect x="4" y="7" width="8" height="2" rx="0.5" fill="#9b59f5"/>
-        <rect x="2" y="6" width="2" height="4" rx="0.5" fill="#00e5ff"/>
-        <rect x="12" y="6" width="2" height="4" rx="0.5" fill="#00e5ff"/>
-        <circle cx="8" cy="8" r="1.5" fill="#e040fb"/>
-        <line x1="8" y1="1" x2="12" y2="4" stroke="#7c3aed" stroke-width="0.8"/>
-        <circle cx="13" cy="3" r="1" fill="#00ff41" opacity="0.8"/>
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0">
+        <circle cx="9" cy="9" r="3" fill="none" stroke="#e040fb" stroke-width="1.2"/>
+        <line x1="9" y1="1" x2="9" y2="3.5" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="9" y1="14.5" x2="9" y2="17" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="1" y1="9" x2="3.5" y2="9" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="14.5" y1="9" x2="17" y2="9" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+        <line x1="3.2" y1="3.2" x2="5" y2="5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+        <line x1="13" y1="13" x2="14.8" y2="14.8" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+        <line x1="14.8" y1="3.2" x2="13" y2="5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+        <line x1="5" y1="13" x2="3.2" y2="14.8" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+        <circle cx="9" cy="9" r="1.5" fill="#e040fb"/>
       </svg>
-      <svg width="18" height="14" viewBox="0 0 18 14" fill="none">
-        <ellipse cx="9" cy="9" rx="7" ry="4" fill="#7c3aed55" stroke="#7c3aed" stroke-width="0.8"/>
-        <ellipse cx="6" cy="7" rx="4" ry="3" fill="#100520" stroke="#9b59f5" stroke-width="0.8"/>
-        <ellipse cx="11" cy="6" rx="4.5" ry="3.5" fill="#100520" stroke="#9b59f5" stroke-width="0.8"/>
-        <ellipse cx="8.5" cy="5" rx="3.5" ry="3" fill="#100520" stroke="#b48aff" stroke-width="0.8"/>
+      <svg width="22" height="16" viewBox="0 0 22 16" fill="none" style="flex-shrink:0">
+        <path d="M4 11 Q4 7 8 7 Q8 4 12 4 Q16 4 16 7 Q19 7 19 11 Z" fill="#100520" stroke="#9b59f5" stroke-width="1"/>
+        <path d="M2 13 Q2 10 5.5 10 Q6 8 9 8 Q12 8 12 10 Q14.5 10 14.5 13 Z" fill="#100520" stroke="#b48aff" stroke-width="0.8"/>
+        <line x1="9" y1="13" x2="9" y2="15" stroke="#00e5ff" stroke-width="1" stroke-linecap="round"/>
+        <line x1="12" y1="13" x2="12" y2="15.5" stroke="#00e5ff" stroke-width="1" stroke-linecap="round"/>
+        <line x1="6" y1="13" x2="6" y2="15.5" stroke="#00e5ff" stroke-width="1" stroke-linecap="round"/>
       </svg>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="3" fill="#e040fb" opacity="0.8"/>
-        <line x1="8" y1="1" x2="8" y2="3" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="8" y1="13" x2="8" y2="15" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="1" y1="8" x2="3" y2="8" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="13" y1="8" x2="15" y2="8" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="3" y1="3" x2="4.5" y2="4.5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
-        <line x1="11.5" y1="11.5" x2="13" y2="13" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
-        <line x1="13" y1="3" x2="11.5" y2="4.5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
-        <line x1="4.5" y1="11.5" x2="3" y2="13" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+      <svg width="20" height="18" viewBox="0 0 20 18" fill="none" style="flex-shrink:0">
+        <rect x="8" y="6" width="4" height="6" rx="1" fill="#7c3aed"/>
+        <rect x="3" y="8" width="14" height="2" rx="1" fill="#9b59f5"/>
+        <rect x="1" y="7" width="2" height="4" rx="0.5" fill="#00e5ff"/>
+        <rect x="17" y="7" width="2" height="4" rx="0.5" fill="#00e5ff"/>
+        <circle cx="10" cy="9" r="1.8" fill="#e040fb"/>
+        <path d="M10 2 L14 5" stroke="#7c3aed" stroke-width="0.8" fill="none"/>
+        <circle cx="14.5" cy="4.5" r="1.2" fill="#00ff41" opacity="0.9"/>
       </svg>
       // ATMOSPHERIC FEED //
     </div>
@@ -130,11 +158,14 @@
   <div class="panel">
     <div class="panel-title">// QUICK ACCESS //</div>
     <div class="links-grid">
-      <a class="link-item" href="https://github.com" target="_blank"><span class="link-arrow">▶</span>GitHub</a>
+      <a class="link-item" href="https://open.spotify.com" target="_blank"><span class="link-arrow">▶</span>Spotify</a>
+      <a class="link-item" href="https://google.com" target="_blank"><span class="link-arrow">▶</span>Google</a>
+      <a class="link-item" href="https://mail.google.com" target="_blank"><span class="link-arrow">▶</span>Gmail</a>
+      <a class="link-item" href="https://max.com" target="_blank"><span class="link-arrow">▶</span>HBO Max</a>
+      <a class="link-item" href="https://netflix.com" target="_blank"><span class="link-arrow">▶</span>Netflix</a>
+      <a class="link-item" href="https://npr.org" target="_blank"><span class="link-arrow">▶</span>NPR</a>
       <a class="link-item" href="https://claude.ai" target="_blank"><span class="link-arrow">▶</span>Claude AI</a>
-      <a class="link-item" href="https://vercel.com" target="_blank"><span class="link-arrow">▶</span>Vercel</a>
-      <a class="link-item" href="https://www.reddit.com" target="_blank"><span class="link-arrow">▶</span>Reddit</a>
-      <a class="link-item" href="https://news.ycombinator.com" target="_blank"><span class="link-arrow">▶</span>Hacker News</a>
+      <a class="link-item" href="https://reddit.com" target="_blank"><span class="link-arrow">▶</span>Reddit</a>
       <a class="link-item" href="https://youtube.com" target="_blank"><span class="link-arrow">▶</span>YouTube</a>
     </div>
   </div>
@@ -142,25 +173,68 @@
   <div class="status-bar">
     <span><span class="status-dot"></span>SYSTEM ONLINE</span>
     <span id="uptime-display">UPTIME: 00:00:00</span>
-    <span>JOSH_OS v2.0 // NEON GRID</span>
+    <span>JOSH_OS v2.0</span>
+  </div>
+
+  <div class="smiley-wrap">
+    <a id="smiley-link" href="#" target="_blank">
+      <svg width="64" height="64" viewBox="0 0 64 64">
+        <defs>
+          <radialGradient id="sg" cx="38%" cy="28%" r="60%">
+            <stop offset="0%" stop-color="#ff80ff" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#ff80ff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="32" cy="32" r="30" fill="#e040fb"/>
+        <circle cx="32" cy="32" r="30" fill="url(#sg)"/>
+        <path d="M22 25 Q24 21 26 25" fill="none" stroke="#14052a" stroke-width="2.8" stroke-linecap="round"/>
+        <circle cx="41" cy="23" r="4" fill="#14052a"/>
+        <path d="M20 41 Q32 54 44 41" fill="none" stroke="#14052a" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </a>
   </div>
 
 </div>
 
 <script>
+  const VIDEOS=[
+    'https://www.youtube.com/watch?v=obkrMiyDrbs',
+    'https://www.youtube.com/watch?v=2kHDFjJD8ms',
+    'https://www.youtube.com/watch?v=zfaOf70M4xs',
+    'https://www.youtube.com/watch?v=FGBhQbmPwH8',
+    'https://www.youtube.com/watch?v=4WWJH61DKJI',
+    'https://www.youtube.com/watch?v=ZfS_MmAjvZg',
+    'https://www.youtube.com/watch?v=cWj9eT_GMwI'
+  ];
+  document.getElementById('smiley-link').addEventListener('click',function(e){
+    e.preventDefault();
+    window.open(VIDEOS[Math.floor(Math.random()*VIDEOS.length)],'_blank');
+  });
+
   function pad(n){return String(n).padStart(2,'0')}
-  function makeTube(d){return `<div class="tube"><div class="tube-glow"></div><div class="tube-digit">${d}</div></div>`}
-  function makeColon(){return `<div class="colon">:</div>`}
+  function makeTube(d){return`<div class="tube"><div class="tube-glow"></div><div class="tube-digit">${d}</div></div>`}
+  function makeColon(){return`<div class="colon">:</div>`}
+
+  const TIME_MSGS=[
+    {h:[0,6],  text:'BED TIME :)',              color:'#7c3aed'},
+    {h:[6,12], text:'GOOD MORNING SUNSHINE ☀',  color:'#f4c430'},
+    {h:[12,13],text:'LUNCH TIME!',               color:'#00e5ff'},
+    {h:[13,18],text:'TIME TO WORK OUT BEAST 💪', color:'#e040fb'},
+    {h:[18,22],text:'I LOVE YOU ♡',              color:'#ff6eb4'},
+    {h:[22,24],text:'BED TIME :)',               color:'#7c3aed'}
+  ];
+  function getTimeMsg(h){for(const m of TIME_MSGS){if(h>=m.h[0]&&h<m.h[1])return m}return TIME_MSGS[0]}
 
   function updateClock(){
-    const now=new Date();
-    const h=pad(now.getHours()),m=pad(now.getMinutes()),s=pad(now.getSeconds());
+    const now=new Date(),h=now.getHours(),hs=pad(h),m=pad(now.getMinutes()),s=pad(now.getSeconds());
     const row=document.getElementById('nixie-row');
-    if(row) row.innerHTML=makeTube(h[0])+makeTube(h[1])+makeColon()+makeTube(m[0])+makeTube(m[1])+makeColon()+makeTube(s[0])+makeTube(s[1]);
+    if(row)row.innerHTML=makeTube(hs[0])+makeTube(hs[1])+makeColon()+makeTube(m[0])+makeTube(m[1])+makeColon()+makeTube(s[0])+makeTube(s[1]);
     const days=['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY'];
     const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     const dl=document.getElementById('date-line');
-    if(dl) dl.textContent=`${days[now.getDay()]} // ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    if(dl)dl.textContent=`${days[now.getDay()]} // ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+    const tm=document.getElementById('time-msg');
+    if(tm){const msg=getTimeMsg(h);tm.textContent=msg.text;tm.style.color=msg.color;tm.style.textShadow=`0 0 12px ${msg.color}88`;}
   }
   setInterval(updateClock,1000);
   updateClock();
@@ -174,45 +248,31 @@
   }
   setInterval(updateUptime,1000);
 
-  const WMO={0:'CLEAR SKY',1:'MAINLY CLEAR',2:'PARTLY CLOUDY',3:'OVERCAST',45:'FOG',48:'RIME FOG',
-    51:'LIGHT DRIZZLE',53:'DRIZZLE',55:'HEAVY DRIZZLE',61:'LIGHT RAIN',63:'RAIN',65:'HEAVY RAIN',
-    71:'LIGHT SNOW',73:'SNOW',75:'HEAVY SNOW',77:'SNOW GRAINS',80:'RAIN SHOWERS',81:'HEAVY SHOWERS',
-    82:'VIOLENT SHOWERS',85:'SNOW SHOWERS',86:'HEAVY SNOW SHOWERS',95:'THUNDERSTORM',96:'T-STORM+HAIL',99:'SEVERE T-STORM'};
-  const WMO_ICON={0:'☀',1:'🌤',2:'⛅',3:'☁',45:'🌫',48:'🌫',51:'🌦',53:'🌧',55:'🌧',
-    61:'🌦',63:'🌧',65:'🌧',71:'🌨',73:'❄',75:'❄',77:'❄',80:'🌦',81:'🌧',82:'⛈',
-    85:'🌨',86:'❄',95:'⛈',96:'⛈',99:'⛈'};
+  const WMO={0:'CLEAR SKY',1:'MAINLY CLEAR',2:'PARTLY CLOUDY',3:'OVERCAST',45:'FOG',48:'RIME FOG',51:'LIGHT DRIZZLE',53:'DRIZZLE',55:'HEAVY DRIZZLE',61:'LIGHT RAIN',63:'RAIN',65:'HEAVY RAIN',71:'LIGHT SNOW',73:'SNOW',75:'HEAVY SNOW',77:'SNOW GRAINS',80:'RAIN SHOWERS',81:'HEAVY SHOWERS',82:'VIOLENT SHOWERS',85:'SNOW SHOWERS',86:'HEAVY SNOW SHOWERS',95:'THUNDERSTORM',96:'T-STORM+HAIL',99:'SEVERE T-STORM'};
+  const WMO_ICON={0:'☀',1:'🌤',2:'⛅',3:'☁',45:'🌫',48:'🌫',51:'🌦',53:'🌧',55:'🌧',61:'🌦',63:'🌧',65:'🌧',71:'🌨',73:'❄',75:'❄',77:'❄',80:'🌦',81:'🌧',82:'⛈',85:'🌨',86:'❄',95:'⛈',96:'⛈',99:'⛈'};
+  function windDir(d){return['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8]}
+  function getWxPersonal(code,wind){if((code===0||code===1)&&wind<10)return'Volley Ball? 🏐';return''}
+  function getInputHTML(city=''){return`<div class="weather-input-row"><input class="city-input" id="city-input" placeholder="ENTER CITY..." value="${city}"/><button class="go-btn" id="go-btn">SCAN &gt;</button></div>`}
 
-  function windDir(d){return ['N','NE','E','SE','S','SW','W','NW'][Math.round(d/45)%8]}
-
-  function getInputHTML(city=''){
-    return `<div class="weather-input-row">
-      <input class="city-input" id="city-input" placeholder="ENTER CITY..." value="${city}"/>
-      <button class="go-btn" id="go-btn">SCAN &gt;</button>
-    </div>`;
+  function bindWeather(){
+    const btn=document.getElementById('go-btn'),inp=document.getElementById('city-input');
+    if(btn)btn.addEventListener('click',handleWeather);
+    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')handleWeather()});
   }
 
   async function getWeather(city){
-    const statusEl=document.getElementById('weather-status');
-    const contentEl=document.getElementById('weather-content');
-    if(statusEl) statusEl.textContent='LOCATING TARGET...';
+    const statusEl=document.getElementById('weather-status'),contentEl=document.getElementById('weather-content');
+    if(statusEl)statusEl.textContent='LOCATING TARGET...';
     try{
       const gR=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`);
       const gD=await gR.json();
-      if(!gD.results||!gD.results.length) throw new Error('CITY NOT FOUND IN DATABASE');
-      const {latitude:lat,longitude:lon,name,country_code}=gD.results[0];
-      if(statusEl) statusEl.textContent='FETCHING ATMOSPHERIC DATA...';
+      if(!gD.results||!gD.results.length)throw new Error('CITY NOT FOUND');
+      const{latitude:lat,longitude:lon,name,country_code}=gD.results[0];
       const wR=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,relative_humidity_2m,precipitation&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`);
       const wx=await wR.json();
-      const c=wx.current;
-      const code=c.weather_code;
-      const temp=Math.round(c.temperature_2m);
-      const feels=Math.round(c.apparent_temperature);
-      const wind=Math.round(c.wind_speed_10m);
-      const wdir=windDir(c.wind_direction_10m);
-      const hum=Math.round(c.relative_humidity_2m);
-      const precip=c.precipitation.toFixed(1);
-      contentEl.innerHTML=`
-        ${getInputHTML(city)}
+      const c=wx.current,code=c.weather_code,temp=Math.round(c.temperature_2m),feels=Math.round(c.apparent_temperature),wind=Math.round(c.wind_speed_10m),wdir=windDir(c.wind_direction_10m),hum=Math.round(c.relative_humidity_2m),precip=c.precipitation.toFixed(1);
+      const personal=getWxPersonal(code,wind);
+      contentEl.innerHTML=`${getInputHTML(city)}
         <div class="weather-main" style="margin-top:14px">
           <div>
             <div class="weather-temp">${temp}<sup>°F</sup></div>
@@ -226,27 +286,41 @@
           </div>
         </div>
         <div class="weather-stats">
-          <div class="stat-box"><div class="stat-label">HUMIDITY</div><div class="stat-val">${hum}%</div></div>
-          <div class="stat-box"><div class="stat-label">WIND</div><div class="stat-val">${wind} MPH ${wdir}</div></div>
-          <div class="stat-box"><div class="stat-label">PRECIP</div><div class="stat-val">${precip} MM</div></div>
-        </div>`;
-      document.getElementById('go-btn').addEventListener('click',handleWeather);
-      document.getElementById('city-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleWeather()});
+          <div><div class="stat-label">HUMIDITY</div><div class="stat-val">${hum}%</div></div>
+          <div><div class="stat-label">WIND</div><div class="stat-val">${wind} MPH ${wdir}</div></div>
+          <div><div class="stat-label">PRECIP</div><div class="stat-val">${precip} MM</div></div>
+        </div>
+        ${personal?`<div class="wx-personal">${personal}</div>`:''}`;
+      bindWeather();
     }catch(e){
       contentEl.innerHTML=`${getInputHTML(city)}<div class="weather-error">ERROR: ${e.message}</div>`;
-      document.getElementById('go-btn').addEventListener('click',handleWeather);
-      document.getElementById('city-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleWeather()});
+      bindWeather();
     }
   }
 
-  function handleWeather(){
-    const city=document.getElementById('city-input')?.value?.trim();
-    if(city) getWeather(city);
-  }
-
-  document.getElementById('go-btn').addEventListener('click',handleWeather);
-  document.getElementById('city-input').addEventListener('keydown',e=>{if(e.key==='Enter')handleWeather()});
+  function handleWeather(){const city=document.getElementById('city-input')?.value?.trim();if(city)getWeather(city)}
+  bindWeather();
   getWeather('Denver');
+
+  function drawWarpGrid(){
+    const canvas=document.getElementById('grid-canvas');
+    if(!canvas)return;
+    const W=window.innerWidth,H=window.innerHeight;
+    canvas.width=W;canvas.height=H;
+    const ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(140,80,255,0.13)';
+    ctx.lineWidth=0.8;
+    const cx=W*0.5,cols=28,rows=20;
+    function warp(gx,gy){
+      const nx=gx/(cols-1),ny=gy/(rows-1),p=0.55+ny*0.9;
+      return{x:cx+(nx-0.5)*W*p,y:H*0.72-H*0.72*(1-ny)*(1-ny*0.3)};
+    }
+    for(let gx=0;gx<=cols;gx++){ctx.beginPath();let f=true;for(let gy=0;gy<=rows;gy++){const p=warp(gx,gy);f?(ctx.moveTo(p.x,p.y),f=false):ctx.lineTo(p.x,p.y)}ctx.stroke()}
+    for(let gy=0;gy<=rows;gy++){ctx.beginPath();let f=true;for(let gx=0;gx<=cols;gx++){const p=warp(gx,gy);f?(ctx.moveTo(p.x,p.y),f=false):ctx.lineTo(p.x,p.y)}ctx.stroke()}
+  }
+  drawWarpGrid();
+  window.addEventListener('resize',drawWarpGrid);
 </script>
 </body>
 </html>
