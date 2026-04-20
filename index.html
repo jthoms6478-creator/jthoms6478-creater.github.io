@@ -91,6 +91,19 @@
     .weather-error{color:#ff4488;font-size:12px;margin-top:8px}
     @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
 
+/* googe search */
+    .search-label{font-size:11px;letter-spacing:3px;color:#d0aaff;margin-bottom:12px;text-align:center;font-weight:bold}
+    .search-btn{background:transparent;border:1px solid #7c3aed88;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 14px;cursor:pointer;letter-spacing:2px;transition:all 0.2s}
+    .search-input-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .search-input{background:rgba(5, 37, 50, 0.103);border:1px solid #7c3aed44;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 12px;outline:none;flex:1;min-width:100px}
+
+    .search-btn:hover{background:#7c3aed22;border-color:#e040fb;box-shadow:0 0 12px #7c3aed55}
+    .search-loading{color:#7c3aed77;font-size:12px;margin-top:8px;animation:pulse 1.5s ease-in-out infinite}
+    .search-btn{background:transparent;border:1px solid #7c3aed88;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 14px;cursor:pointer;letter-spacing:2px;transition:all 0.2s}
+    .search-btn:hover{background:#7c3aed22;border-color:#e040fb;box-shadow:0 0 12px #7c3aed55}
+    .search-loading{color:#7c3aed77;font-size:12px;margin-top:8px;animation:pulse 1.5s ease-in-out infinite}
+    .search-msg{font-size:13px;letter-spacing:2px;text-align:center;margin-top:8px;min-height:22px;font-family:'Orbitron',sans-serif;font-weight:700}
+
     /* QUICK ACCESS — LARGER */
     .links-grid{display:flex;flex-direction:column;gap:10px;margin-top:10px}
     .link-item{
@@ -164,7 +177,7 @@
   <!-- TWO COLUMN LAYOUT -->
   <div class="main-grid">
 
-    <!-- LEFT COLUMN: Clock + Weather -->
+    <!-- LEFT COLUMN: Clock + Weather + search-->
     <div style="display:flex;flex-direction:column;gap:20px">
 
       <div class="panel">
@@ -198,22 +211,28 @@
           <div class="weather-loading" id="weather-status">AWAITING QUERY...</div>
         </div>
       </div>
-
-    </div>
+      <div class="panel">
+        <div class="search-label"> // WHAT ARE YOU LOOKING FOR // </div>
+            <div class="search-input-row">
+            <input class="search-input" id="search-input" placeholder="Search..."/>
+            <button class="search-btn" id="search-btn">EXPLORE &gt;</button>
+          </div>
+        </div>
+      </div>
 
     <!-- RIGHT COLUMN: Quick Access -->
     <div class="panel" style="height:100%">
       <div class="panel-title">// QUICK ACCESS //</div>
       <div class="links-grid">
-        <a class="link-item" href="https://open.spotify.com" target="_blank"><span class="link-arrow">▶</span>Spotify</a>
-        <a class="link-item" href="https://google.com" target="_blank"><span class="link-arrow">▶</span>Google</a>
+        <a class="link-item" href="https://youtube.com" target="_blank"><span class="link-arrow">▶</span>YouTube</a>
         <a class="link-item" href="https://mail.google.com" target="_blank"><span class="link-arrow">▶</span>Gmail</a>
+        <a class="link-item" href="https://open.spotify.com" target="_blank"><span class="link-arrow">▶</span>Spotify</a>
+        <a class="link-item" href="https://ajsmovies.net/web/index.html#!/startup/login.html?serverId=04bce46e1cf940f2bb480fd1576521c9" target="_blank"><span class="link-arrow">▶</span>Movies</a>
         <a class="link-item" href="https://max.com" target="_blank"><span class="link-arrow">▶</span>HBO Max</a>
         <a class="link-item" href="https://netflix.com" target="_blank"><span class="link-arrow">▶</span>Netflix</a>
         <a class="link-item" href="https://npr.org" target="_blank"><span class="link-arrow">▶</span>NPR</a>
         <a class="link-item" href="https://claude.ai" target="_blank"><span class="link-arrow">▶</span>Claude AI</a>
         <a class="link-item" href="https://reddit.com" target="_blank"><span class="link-arrow">▶</span>Reddit</a>
-        <a class="link-item" href="https://youtube.com" target="_blank"><span class="link-arrow">▶</span>YouTube</a>
       </div>
     </div>
 
@@ -348,9 +367,22 @@
     }
   }
 
+  async function search() {
+  const query = document.getElementById('search-input')?.value?.trim();
+  if (query) {
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+  }
+}
+
   function handleWeather(){const city=document.getElementById('city-input')?.value?.trim();if(city)getWeather(city)}
   bindWeather();
   getWeather('Denver');
+  document.getElementById('search-btn').addEventListener('click', search);
+  document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') search();
+});
+
+  
 
   /* FULL-PAGE PERSPECTIVE GRID */
   function drawWarpGrid(){
