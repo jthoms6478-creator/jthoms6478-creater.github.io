@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head> 
+<head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JOSH_OS v2.0</title>
@@ -13,62 +13,102 @@
     .scanline{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);z-index:1}
     .vignette{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background:radial-gradient(ellipse at center,transparent 35%,rgba(5,1,15,0.88) 100%);z-index:2}
 
-    .love-col{position:fixed;left:12px;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:10px;user-select:none}
-    .love-line{width:1px;height:10px;background:linear-gradient(to bottom,transparent,#7c3aed55,transparent)}
-    .lt{writing-mode:vertical-rl;text-orientation:mixed;font-family:'Orbitron',sans-serif;font-weight:900;letter-spacing:4px;line-height:1}
-    .lt-jp{font-size:15px;color:#e040fb;text-shadow:0 0 14px #e040fbcc,0 0 30px #7c3aed77;opacity:0.9}
-    .lt-zh{font-size:15px;color:#b48aff;text-shadow:0 0 12px #b48affcc,0 0 26px #7c3aed66;opacity:0.82}
-    .lt-es{font-size:12px;color:#00e5ff;text-shadow:0 0 10px #00e5ffcc,0 0 22px #0077ff55;letter-spacing:3px;opacity:0.75}
-    .lt-fr{font-size:11px;color:#e040fb;text-shadow:0 0 10px #e040fbaa,0 0 20px #7c3aed44;letter-spacing:3px;opacity:0.65}
-    .lt-pt{font-size:11px;color:#9b59f5;text-shadow:0 0 10px #9b59f5aa,0 0 20px #7c3aed44;letter-spacing:3px;opacity:0.55}
+    .love-col{position:fixed;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;align-items:center;gap:12px;user-select:none}
+    .love-col.left{left:14px}
+    .love-col.right{right:14px}
+    .love-line{width:1px;height:12px;background:linear-gradient(to bottom,transparent,#7c3aed66,transparent)}
+    .lt{writing-mode:vertical-rl;text-orientation:mixed;font-family:'Orbitron',sans-serif;font-weight:900;line-height:1}
+    .love-col.right .lt{transform:rotate(180deg)}
+    .lt-jp{font-size:30px;color:#e040fb;text-shadow:0 0 16px #e040fbcc,0 0 32px #7c3aed77;opacity:0.92;letter-spacing:5px}
+    .lt-zh{font-size:30px;color:#b48aff;text-shadow:0 0 14px #b48affcc,0 0 28px #7c3aed66;opacity:0.84;letter-spacing:5px}
+    .lt-es{font-size:30px;color:#00e5ff;text-shadow:0 0 12px #00e5ffcc,0 0 24px #0077ff55;letter-spacing:4px;opacity:0.78}
+    .lt-fr{font-size:30px;color:#e040fb;text-shadow:0 0 12px #e040fbaa,0 0 22px #7c3aed44;letter-spacing:4px;opacity:0.68}
+    .lt-ko{font-size:30px;color:#ff6eb4;text-shadow:0 0 16px #ff6eb4cc,0 0 30px #e040fb66;opacity:0.88;letter-spacing:5px}
+    .lt-ar{font-size:30px;color:#00e5ff;text-shadow:0 0 14px #00e5ffcc,0 0 26px #0077ff55;opacity:0.80;letter-spacing:4px}
+    .lt-it{font-size:30px;color:#b48aff;text-shadow:0 0 12px #b48affcc,0 0 24px #7c3aed55;letter-spacing:4px;opacity:0.72}
+    .lt-ru{font-size:30px;color:#9b59f5;text-shadow:0 0 10px #9b59f5aa,0 0 20px #7c3aed44;letter-spacing:4px;opacity:0.55}
 
-    .container{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:24px 16px 24px 52px;display:flex;flex-direction:column;gap:20px}
+    .container{position:relative;z-index:10;max-width:900px;margin:0 auto;padding:24px 52px;display:flex;flex-direction:column;gap:20px}
 
     .header{text-align:center;border-bottom:1px solid #7c3aed55;padding-bottom:16px}
     .sys-id{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:4px;color:#b48affcc;margin-bottom:6px}
-    .user{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:900;color:#e040fb;letter-spacing:8px;text-shadow:0 0 24px #e040fbcc,0 0 60px #7c3aed88;line-height:1.1}
-    .blink{animation:blink 1.2s step-end infinite}
+
+    .user{
+      font-family:'Orbitron',sans-serif;
+      font-size:42px;
+      font-weight:900;
+      letter-spacing:8px;
+      line-height:1.1;
+      background:linear-gradient(90deg,#00ffaa,#a855f7,#e040fb,#00e5ff,#00ffaa);
+      background-size:250% auto;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      animation:shimmer 5s linear infinite;
+    }
+    @keyframes shimmer{to{background-position:250% center}}
+
+    .blink{animation:blink 1.2s step-end infinite;-webkit-text-fill-color:#e040fb}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+    /* TWO COLUMN MAIN LAYOUT */
+    .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 
     .panel{background:rgba(10,2,30,0.88);border:1px solid #7c3aed44;padding:20px}
     .panel-title{font-size:11px;letter-spacing:3px;color:#d0aaff;margin-bottom:12px;text-transform:uppercase;display:flex;align-items:center;gap:8px;font-weight:bold}
 
+    /* CLOCK */
     .clock-label{font-size:11px;letter-spacing:3px;color:#d0aaff;margin-bottom:12px;text-align:center;font-weight:bold}
-    .nixie-row{display:flex;align-items:center;justify-content:center;gap:6px}
-    .tube{position:relative;width:64px;height:96px;background:linear-gradient(180deg,#100520,#080212);border:1px solid #4a1080;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .nixie-row{display:flex;align-items:center;justify-content:center;gap:4px}
+    .tube{position:relative;width:52px;height:80px;background:linear-gradient(180deg,#100520,#080212);border:1px solid #4a1080;border-radius:6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
     .tube::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(180,80,255,0.07),transparent 60%);border-radius:6px}
     .tube::after{content:'';position:absolute;top:2px;left:4px;right:4px;height:30%;background:linear-gradient(180deg,rgba(255,255,255,0.05),transparent);border-radius:4px 4px 0 0}
     .tube-glow{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,200,255,0.22),transparent 70%);border-radius:6px;z-index:1}
-    .tube-digit{font-family:'Orbitron',sans-serif;font-size:42px;font-weight:700;color:#00e5ff;text-shadow:0 0 8px #00e5ffcc,0 0 22px #00aaff99,0 0 44px #0077ff55;position:relative;z-index:2;line-height:1}
-    .colon{font-family:'Orbitron',sans-serif;font-size:40px;color:#9b59f5;text-shadow:0 0 12px #9b59f5cc;margin:0 2px;align-self:center;animation:colonblink 1s step-end infinite}
+    .tube-digit{font-family:'Orbitron',sans-serif;font-size:34px;font-weight:700;color:#00e5ff;text-shadow:0 0 8px #00e5ffcc,0 0 22px #00aaff99,0 0 44px #0077ff55;position:relative;z-index:2;line-height:1}
+    .colon{font-family:'Orbitron',sans-serif;font-size:32px;color:#9b59f5;text-shadow:0 0 12px #9b59f5cc;margin:0 1px;align-self:center;animation:colonblink 1s step-end infinite}
     @keyframes colonblink{0%,100%{opacity:1}50%{opacity:0.1}}
-    .date-line{font-size:12px;letter-spacing:3px;color:#9b59f5cc;margin-top:10px;text-align:center}
-    .time-msg{font-size:15px;letter-spacing:2px;text-align:center;margin-top:8px;min-height:22px;font-family:'Orbitron',sans-serif;font-weight:700}
+    .date-line{font-size:11px;letter-spacing:3px;color:#9b59f5cc;margin-top:10px;text-align:center}
+    .time-msg{font-size:13px;letter-spacing:2px;text-align:center;margin-top:8px;min-height:22px;font-family:'Orbitron',sans-serif;font-weight:700}
 
-    .weather-temp{font-family:'Orbitron',sans-serif;font-size:52px;font-weight:900;color:#e040fb;text-shadow:0 0 15px #e040fb88;line-height:1}
-    .weather-temp sup{font-size:22px;vertical-align:super}
-    .weather-city{font-family:'Orbitron',sans-serif;font-size:15px;color:#e040fb;letter-spacing:2px}
+    /* WEATHER */
+    .weather-temp{font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:#e040fb;text-shadow:0 0 15px #e040fb88;line-height:1}
+    .weather-temp sup{font-size:20px;vertical-align:super}
+    .weather-city{font-family:'Orbitron',sans-serif;font-size:13px;color:#e040fb;letter-spacing:2px}
     .weather-info{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#b48aff99}
-    .wx-icon{font-size:28px;margin:4px 0}
+    .wx-icon{font-size:26px;margin:4px 0}
     .weather-main{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
     .weather-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;border-top:1px solid #7c3aed22;padding-top:12px}
     .stat-label{font-size:10px;letter-spacing:2px;color:#9b59f599}
-    .stat-val{font-size:14px;color:#00e5ffcc}
-    .wx-personal{font-size:13px;color:#e040fbbb;margin-top:10px;letter-spacing:1px;border-left:2px solid #e040fb55;padding-left:10px}
+    .stat-val{font-size:13px;color:#00e5ffcc}
+    .wx-personal{font-size:12px;color:#e040fbbb;margin-top:10px;letter-spacing:1px;border-left:2px solid #e040fb55;padding-left:10px}
     .weather-input-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-    .city-input{background:rgba(20,5,50,0.8);border:1px solid #7c3aed44;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 12px;outline:none;flex:1;min-width:140px}
+    .city-input{background:rgba(20,5,50,0.8);border:1px solid #7c3aed44;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:13px;padding:8px 12px;outline:none;flex:1;min-width:100px}
     .city-input::placeholder{color:#7c3aed44}
     .city-input:focus{border-color:#9b59f5;box-shadow:0 0 8px #7c3aed33}
-    .go-btn{background:transparent;border:1px solid #7c3aed88;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 16px;cursor:pointer;letter-spacing:2px;transition:all 0.2s}
+    .go-btn{background:transparent;border:1px solid #7c3aed88;color:#b48aff;font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 14px;cursor:pointer;letter-spacing:2px;transition:all 0.2s}
     .go-btn:hover{background:#7c3aed22;border-color:#e040fb;box-shadow:0 0 12px #7c3aed55}
     .weather-loading{color:#7c3aed77;font-size:12px;margin-top:8px;animation:pulse 1.5s ease-in-out infinite}
     .weather-error{color:#ff4488;font-size:12px;margin-top:8px}
     @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
 
-    .links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
-    .link-item{border:1px solid #7c3aed22;padding:10px 12px;transition:all 0.15s;display:flex;align-items:center;gap:8px;text-decoration:none;color:#b48aff99;font-size:12px}
-    .link-item:hover{border-color:#9b59f577;color:#e040fb;background:#7c3aed11;box-shadow:0 0 10px #7c3aed33}
-    .link-arrow{color:#7c3aed55;font-size:10px}
+    /* QUICK ACCESS — LARGER */
+    .links-grid{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+    .link-item{
+      border:1px solid #7c3aed33;
+      padding:16px 20px;
+      transition:all 0.15s;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
+      color:#b48aff;
+      font-size:16px;
+      letter-spacing:3px;
+      font-family:'Orbitron',sans-serif;
+      font-weight:700;
+    }
+    .link-item:hover{border-color:#9b59f577;color:#e040fb;background:#7c3aed11;box-shadow:0 0 14px #7c3aed33;letter-spacing:4px}
+    .link-arrow{color:#e040fbbb;font-size:13px}
 
     .status-bar{border-top:1px solid #7c3aed22;padding-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:11px;color:#7c3aed77;letter-spacing:2px}
     .status-dot{width:6px;height:6px;border-radius:50%;background:#00ff41;display:inline-block;margin-right:6px;box-shadow:0 0 6px #00ff41;animation:pulse 2s ease-in-out infinite}
@@ -78,6 +118,12 @@
     .smiley-wrap a svg{display:block;transition:filter 0.3s,transform 0.3s}
     .smiley-wrap a:hover svg{filter:drop-shadow(0 0 16px #e040fb) drop-shadow(0 0 30px #7c3aed);transform:scale(1.1)}
     .smiley-wrap a:focus,.smiley-wrap a:active{outline:none !important;box-shadow:none !important;border:none !important}
+
+    @media(max-width:640px){
+      .main-grid{grid-template-columns:1fr}
+      .love-col{display:none}
+      .container{padding:16px 12px}
+    }
   </style>
 </head>
 <body>
@@ -88,7 +134,7 @@
 <div class="scanline"></div>
 <div class="vignette"></div>
 
-<div class="love-col">
+<div class="love-col left">
   <span class="lt lt-jp">愛してます</span>
   <div class="love-line"></div>
   <span class="lt lt-zh">我爱你</span>
@@ -96,8 +142,16 @@
   <span class="lt lt-es">Te amo</span>
   <div class="love-line"></div>
   <span class="lt lt-fr">Je t'aime</span>
+</div>
+
+<div class="love-col right">
+  <span class="lt lt-ko">사랑해요</span>
   <div class="love-line"></div>
-  <span class="lt lt-pt">Eu te amo</span>
+  <span class="lt lt-ar">أحبك</span>
+  <div class="love-line"></div>
+  <span class="lt lt-it">Ti amo</span>
+  <div class="love-line"></div>
+  <span class="lt lt-ru">Я тебя люблю</span>
 </div>
 
 <div class="container">
@@ -107,68 +161,64 @@
     <div class="user">HI JOSH<span class="blink">_</span></div>
   </div>
 
-  <div class="panel">
-    <div class="clock-label">// THE TIME IS NOW //</div>
-    <div class="nixie-row" id="nixie-row"></div>
-    <div class="date-line" id="date-line">...</div>
-    <div class="time-msg" id="time-msg"></div>
-  </div>
+  <!-- TWO COLUMN LAYOUT -->
+  <div class="main-grid">
 
-  <div class="panel">
-    <div class="panel-title">
-      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0">
-        <circle cx="9" cy="9" r="3" fill="none" stroke="#e040fb" stroke-width="1.2"/>
-        <line x1="9" y1="1" x2="9" y2="3.5" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="9" y1="14.5" x2="9" y2="17" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="1" y1="9" x2="3.5" y2="9" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="14.5" y1="9" x2="17" y2="9" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
-        <line x1="3.2" y1="3.2" x2="5" y2="5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
-        <line x1="13" y1="13" x2="14.8" y2="14.8" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
-        <line x1="14.8" y1="3.2" x2="13" y2="5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
-        <line x1="5" y1="13" x2="3.2" y2="14.8" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
-        <circle cx="9" cy="9" r="1.5" fill="#e040fb"/>
-      </svg>
-      <svg width="22" height="16" viewBox="0 0 22 16" fill="none" style="flex-shrink:0">
-        <path d="M4 11 Q4 7 8 7 Q8 4 12 4 Q16 4 16 7 Q19 7 19 11 Z" fill="#100520" stroke="#9b59f5" stroke-width="1"/>
-        <path d="M2 13 Q2 10 5.5 10 Q6 8 9 8 Q12 8 12 10 Q14.5 10 14.5 13 Z" fill="#100520" stroke="#b48aff" stroke-width="0.8"/>
-        <line x1="9" y1="13" x2="9" y2="15" stroke="#00e5ff" stroke-width="1" stroke-linecap="round"/>
-        <line x1="12" y1="13" x2="12" y2="15.5" stroke="#00e5ff" stroke-width="1" stroke-linecap="round"/>
-        <line x1="6" y1="13" x2="6" y2="15.5" stroke="#00e5ff" stroke-width="1" stroke-linecap="round"/>
-      </svg>
-      <svg width="20" height="18" viewBox="0 0 20 18" fill="none" style="flex-shrink:0">
-        <rect x="8" y="6" width="4" height="6" rx="1" fill="#7c3aed"/>
-        <rect x="3" y="8" width="14" height="2" rx="1" fill="#9b59f5"/>
-        <rect x="1" y="7" width="2" height="4" rx="0.5" fill="#00e5ff"/>
-        <rect x="17" y="7" width="2" height="4" rx="0.5" fill="#00e5ff"/>
-        <circle cx="10" cy="9" r="1.8" fill="#e040fb"/>
-        <path d="M10 2 L14 5" stroke="#7c3aed" stroke-width="0.8" fill="none"/>
-        <circle cx="14.5" cy="4.5" r="1.2" fill="#00ff41" opacity="0.9"/>
-      </svg>
-      // ATMOSPHERIC FEED //
-    </div>
-    <div id="weather-content">
-      <div class="weather-input-row">
-        <input class="city-input" id="city-input" placeholder="ENTER CITY..." value="Denver"/>
-        <button class="go-btn" id="go-btn">SCAN &gt;</button>
+    <!-- LEFT COLUMN: Clock + Weather -->
+    <div style="display:flex;flex-direction:column;gap:20px">
+
+      <div class="panel">
+        <div class="clock-label">// THE TIME IS NOW //</div>
+        <div class="nixie-row" id="nixie-row"></div>
+        <div class="date-line" id="date-line">...</div>
+        <div class="time-msg" id="time-msg"></div>
       </div>
-      <div class="weather-loading" id="weather-status">AWAITING QUERY...</div>
-    </div>
-  </div>
 
-  <div class="panel">
-    <div class="panel-title">// QUICK ACCESS //</div>
-    <div class="links-grid">
-      <a class="link-item" href="https://open.spotify.com" target="_blank"><span class="link-arrow">▶</span>Spotify</a>
-      <a class="link-item" href="https://google.com" target="_blank"><span class="link-arrow">▶</span>Google</a>
-      <a class="link-item" href="https://mail.google.com" target="_blank"><span class="link-arrow">▶</span>Gmail</a>
-      <a class="link-item" href="https://max.com" target="_blank"><span class="link-arrow">▶</span>HBO Max</a>
-      <a class="link-item" href="https://netflix.com" target="_blank"><span class="link-arrow">▶</span>Netflix</a>
-      <a class="link-item" href="https://npr.org" target="_blank"><span class="link-arrow">▶</span>NPR</a>
-      <a class="link-item" href="https://claude.ai" target="_blank"><span class="link-arrow">▶</span>Claude AI</a>
-      <a class="link-item" href="https://reddit.com" target="_blank"><span class="link-arrow">▶</span>Reddit</a>
-      <a class="link-item" href="https://youtube.com" target="_blank"><span class="link-arrow">▶</span>YouTube</a>
+      <div class="panel">
+        <div class="panel-title">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0">
+            <circle cx="9" cy="9" r="3" fill="none" stroke="#e040fb" stroke-width="1.2"/>
+            <line x1="9" y1="1" x2="9" y2="3.5" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="9" y1="14.5" x2="9" y2="17" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="1" y1="9" x2="3.5" y2="9" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="14.5" y1="9" x2="17" y2="9" stroke="#e040fb" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="3.2" y1="3.2" x2="5" y2="5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+            <line x1="13" y1="13" x2="14.8" y2="14.8" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+            <line x1="14.8" y1="3.2" x2="13" y2="5" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+            <line x1="5" y1="13" x2="3.2" y2="14.8" stroke="#e040fb" stroke-width="1" stroke-linecap="round"/>
+            <circle cx="9" cy="9" r="1.5" fill="#e040fb"/>
+          </svg>
+          // ATMOSPHERIC FEED //
+        </div>
+        <div id="weather-content">
+          <div class="weather-input-row">
+            <input class="city-input" id="city-input" placeholder="ENTER CITY..." value="Denver"/>
+            <button class="go-btn" id="go-btn">SCAN &gt;</button>
+          </div>
+          <div class="weather-loading" id="weather-status">AWAITING QUERY...</div>
+        </div>
+      </div>
+
     </div>
+
+    <!-- RIGHT COLUMN: Quick Access -->
+    <div class="panel" style="height:100%">
+      <div class="panel-title">// QUICK ACCESS //</div>
+      <div class="links-grid">
+        <a class="link-item" href="https://open.spotify.com" target="_blank"><span class="link-arrow">▶</span>Spotify</a>
+        <a class="link-item" href="https://google.com" target="_blank"><span class="link-arrow">▶</span>Google</a>
+        <a class="link-item" href="https://mail.google.com" target="_blank"><span class="link-arrow">▶</span>Gmail</a>
+        <a class="link-item" href="https://max.com" target="_blank"><span class="link-arrow">▶</span>HBO Max</a>
+        <a class="link-item" href="https://netflix.com" target="_blank"><span class="link-arrow">▶</span>Netflix</a>
+        <a class="link-item" href="https://npr.org" target="_blank"><span class="link-arrow">▶</span>NPR</a>
+        <a class="link-item" href="https://claude.ai" target="_blank"><span class="link-arrow">▶</span>Claude AI</a>
+        <a class="link-item" href="https://reddit.com" target="_blank"><span class="link-arrow">▶</span>Reddit</a>
+        <a class="link-item" href="https://youtube.com" target="_blank"><span class="link-arrow">▶</span>YouTube</a>
+      </div>
+    </div>
+
   </div>
+  <!-- END TWO COLUMN -->
 
   <div class="status-bar">
     <span><span class="status-dot"></span>SYSTEM ONLINE</span>
@@ -302,6 +352,7 @@
   bindWeather();
   getWeather('Denver');
 
+  /* FULL-PAGE PERSPECTIVE GRID */
   function drawWarpGrid(){
     const canvas=document.getElementById('grid-canvas');
     if(!canvas)return;
@@ -309,16 +360,52 @@
     canvas.width=W;canvas.height=H;
     const ctx=canvas.getContext('2d');
     ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle='rgba(140,80,255,0.13)';
-    ctx.lineWidth=0.8;
-    const cx=W*0.5,cols=28,rows=20;
+    const cx=W*0.5;
+    const cols=48,rows=48;
+
+    /* horizon sits at 40% from top so grid fans up AND down */
     function warp(gx,gy){
-      const nx=gx/(cols-1),ny=gy/(rows-1),p=0.55+ny*0.9;
-      return{x:cx+(nx-0.5)*W*p,y:H*0.72-H*0.72*(1-ny)*(1-ny*0.3)};
+      const nx=gx/(cols-1);
+      const ny=gy/(rows-1);
+      /* perspective factor grows with distance from horizon (ny=0.4) */
+      const dist=Math.abs(ny-0.5);
+      const spread=0.18+dist*15;
+      return{
+        x:cx+(nx-0.5)*W*spread,
+        y:H*ny
+      };
     }
-    for(let gx=0;gx<=cols;gx++){ctx.beginPath();let f=true;for(let gy=0;gy<=rows;gy++){const p=warp(gx,gy);f?(ctx.moveTo(p.x,p.y),f=false):ctx.lineTo(p.x,p.y)}ctx.stroke()}
-    for(let gy=0;gy<=rows;gy++){ctx.beginPath();let f=true;for(let gx=0;gx<=cols;gx++){const p=warp(gx,gy);f?(ctx.moveTo(p.x,p.y),f=false):ctx.lineTo(p.x,p.y)}ctx.stroke()}
+
+    /* vertical lines */
+    for(let gx=0;gx<=cols;gx++){
+      ctx.beginPath();
+      let f=true;
+      for(let gy=0;gy<=rows;gy++){
+        const p=warp(gx,gy);
+        f?(ctx.moveTo(p.x,p.y),f=false):ctx.lineTo(p.x,p.y);
+      }
+      ctx.strokeStyle='rgba(140,80,255,0.12)';
+      ctx.lineWidth=0.8;
+      ctx.stroke();
+    }
+
+    /* horizontal lines — fade toward edges */
+    for(let gy=0;gy<=rows;gy++){
+      ctx.beginPath();
+      let f=true;
+      for(let gx=0;gx<=cols;gx++){
+        const p=warp(gx,gy);
+        f?(ctx.moveTo(p.x,p.y),f=false):ctx.lineTo(p.x,p.y);
+      }
+      /* lines near horizon are brighter */
+      const dist=Math.abs(gy/rows-0.4);
+      const alpha=Math.max(0.04,0.18-dist*0.3);
+      ctx.strokeStyle=`rgba(140,80,255,${alpha})`;
+      ctx.lineWidth=0.8;
+      ctx.stroke();
+    }
   }
+
   drawWarpGrid();
   window.addEventListener('resize',drawWarpGrid);
 </script>
