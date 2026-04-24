@@ -1,2 +1,2 @@
-# jthoms6478-creater.github.io
+# jthoms6478-creator.github.io
 Home Page
